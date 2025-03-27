@@ -1,8 +1,11 @@
 package com.app.hackernews.ui.home.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -23,7 +26,14 @@ class HomeScreen : Fragment(R.layout.home_screen) {
     private val binding get() = _binding!!
 
     private val adapter by lazy { HackerNewsAdapter(requireContext(), onItemClick = { itemClick(it) }) }
+    private lateinit var customTabLauncher: ActivityResultLauncher<Intent>
     private val viewModel: HomeScreenViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        customTabLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { Unit }
+    }
 
     override fun onViewCreated(
         view: View,
@@ -77,6 +87,7 @@ class HomeScreen : Fragment(R.layout.home_screen) {
     }
 
     private fun itemClick(hit: Hit) {
-        Toast.makeText(requireContext(), hit.toString(), Toast.LENGTH_LONG).show()
+        hit.storyUrl?.let { viewModel.openCustomTab(it, customTabLauncher) }
+            ?: run { Toast.makeText(requireContext(), getString(R.string.not_url), Toast.LENGTH_SHORT).show() }
     }
 }

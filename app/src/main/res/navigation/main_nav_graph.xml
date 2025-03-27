@@ -11,10 +11,4 @@
         android:label="HomeScreen"
         tools:layout="@layout/home_screen" />
 
-    <fragment
-        android:id="@+id/detailScreen"
-        android:name="com.app.hackernews.ui.detail.ui.DetailScreen"
-        android:label="DetailScreen"
-        tools:layout="@layout/detail_screen" />
-
 </navigation>
