@@ -5,4 +5,5 @@
     <string name="default_description_text">Default description</string>
     <string name="default_author_text">Deafult author</string>
     <string name="default_date_text">/ / /</string>
+    <string name="not_url">No se encontró el enlance</string>
 </resources>
