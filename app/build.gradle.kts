@@ -27,6 +27,13 @@ android {
                 "proguard-rules.pro",
             )
         }
+        debug {
+            buildConfigField(
+                "String",
+                "HACKER_NEWS_BASE_URL",
+                "\"https://hn.algolia.com/api/v1/\"",
+            )
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -34,6 +41,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+    buildFeatures {
+        dataBinding = true
+        buildConfig = true
     }
 }
 
