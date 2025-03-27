@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
+    id("androidx.navigation.safeargs.kotlin")
     id("kotlin-kapt")
 }
 
@@ -63,6 +64,10 @@ dependencies {
     // Hilt Dependency Injection
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)
+
+    // Navigation
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
     // Networking
     implementation(libs.retrofit)
