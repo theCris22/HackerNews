@@ -69,7 +69,8 @@ class HomeScreen : Fragment(R.layout.home_screen) {
                 viewModel.androidNewsState.collect { state ->
                     when (state) {
                         is RequestState.Success -> handleSuccess(state.data.hits)
-                        is RequestState.Error, RequestState.Idle -> handleState(false)
+                        is RequestState.Error -> handleError(state.data?.hits ?: emptyList())
+                        RequestState.Idle -> handleState(false)
                         RequestState.Loading -> handleState(true)
                     }
                 }
@@ -78,6 +79,11 @@ class HomeScreen : Fragment(R.layout.home_screen) {
     }
 
     private fun handleSuccess(data: List<Hit>) {
+        handleState(false)
+        adapter.updateData(data)
+    }
+
+    private fun handleError(data: List<Hit>) {
         handleState(false)
         adapter.updateData(data)
     }

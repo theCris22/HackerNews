@@ -4,11 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Hit(
     @SerializedName("objectID")
-    val objectID: String?,
-    @SerializedName("created_at")
-    val createdAt: String?,
-    @SerializedName("_tags")
-    val tags: List<String>?,
+    val objectID: String,
     @SerializedName("story_title")
     val storyTitle: String?,
     @SerializedName("story_url")
