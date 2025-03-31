@@ -30,10 +30,6 @@ class HackerNewsAdapter(
     ) {
         holder.bindData(context, getItem(position), onItemClick)
     }
-
-    fun updateData(newList: List<Hit>) {
-        submitList(newList)
-    }
 }
 
 class HackerNewsAdapterViewHolder(
