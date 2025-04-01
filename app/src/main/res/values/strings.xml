@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">HackerNews</string>
+    <string name="news_image">news_image</string>
+    <string name="default_title_text">Defult title</string>
+    <string name="default_description_text">Default description</string>
+    <string name="default_author_text">Deafult author</string>
+    <string name="default_date_text">/ / /</string>
+    <string name="not_url">No se encontró el enlance</string>
 </resources>
