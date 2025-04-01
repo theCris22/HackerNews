@@ -4,7 +4,6 @@ import com.app.hackernews.data.database.dao.NewsDao
 import com.app.hackernews.data.database.entities.NewsEntity
 import com.app.hackernews.data.network.models.Hit
 import com.app.hackernews.data.network.models.RequestState
-import com.app.hackernews.data.network.response.AndroidNewsResponse
 import javax.inject.Inject
 
 class HackerNewsRepository
@@ -13,23 +12,23 @@ class HackerNewsRepository
         private val hackerNewsApi: HackerNewsApi,
         private val newsDao: NewsDao,
     ) {
-        suspend fun getLatestAndroidNews(): RequestState<AndroidNewsResponse> =
+        suspend fun getLatestAndroidNews(): RequestState<List<Hit>> =
             try {
                 val response = hackerNewsApi.getLatestAndroidNews()
 
                 if (response.isSuccessful && response.body() != null) {
-                    saveNewsOnDatabase(response.body()!!)
-                    RequestState.Success(response.body()!!)
+                    saveNewsOnDatabase(response.body()?.hits.orEmpty())
+                    RequestState.Success(returnDataFromDatabase())
                 } else {
-                    RequestState.Error(response.message())
+                    RequestState.Error("ERROR", returnDataFromDatabase().orEmpty())
                 }
             } catch (ex: Exception) {
-                returnDataFromDatabase()
+                RequestState.Error("ERROR", returnDataFromDatabase().orEmpty())
             }
 
-        private suspend fun saveNewsOnDatabase(body: AndroidNewsResponse) {
+        private suspend fun saveNewsOnDatabase(list: List<Hit>) {
             val newsList = mutableListOf<NewsEntity>()
-            body.hits.forEachIndexed { index, hit ->
+            list.forEachIndexed { index, hit ->
                 newsList.add(
                     index,
                     NewsEntity(
@@ -45,7 +44,7 @@ class HackerNewsRepository
             newsDao.insertAll(newsList.toList())
         }
 
-        private suspend fun returnDataFromDatabase(): RequestState.Error<AndroidNewsResponse> {
+        suspend fun returnDataFromDatabase(): List<Hit> {
             val dataFromDatabase = newsDao.getAllNews()
 
             val listHit =
@@ -60,6 +59,10 @@ class HackerNewsRepository
                     )
                 }
 
-            return RequestState.Error(message = "Error", data = AndroidNewsResponse(listHit))
+            return listHit
+        }
+
+        suspend fun deleteNewsById(objectId: String) {
+            newsDao.deleteNewsById(objectId)
         }
     }

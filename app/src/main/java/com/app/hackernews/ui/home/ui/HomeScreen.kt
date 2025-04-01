@@ -17,7 +17,6 @@ import com.app.hackernews.R
 import com.app.hackernews.core.openCustomTab
 import com.app.hackernews.data.network.models.Hit
 import com.app.hackernews.data.network.models.RequestState
-import com.app.hackernews.data.network.response.AndroidNewsResponse
 import com.app.hackernews.databinding.HomeScreenBinding
 import com.app.hackernews.ui.home.adapters.HackerNewsAdapter
 import com.app.hackernews.ui.home.viewModel.HomeScreenViewModel
@@ -73,10 +72,10 @@ class HomeScreen : Fragment(R.layout.home_screen) {
                 viewModel.androidNewsState.collect { state ->
                     when (state) {
                         is RequestState.Success -> {
-                            handleSuccess(state)
+                            handleSuccess(state.data)
                         }
                         is RequestState.Error -> {
-                            handleError(state)
+                            handleError(state.data.orEmpty())
                         }
                         RequestState.Idle -> handleLoading(false)
                         RequestState.Loading -> handleLoading(true)
@@ -86,15 +85,15 @@ class HomeScreen : Fragment(R.layout.home_screen) {
         }
     }
 
-    private fun handleSuccess(state: RequestState.Success<AndroidNewsResponse>) {
+    private fun handleSuccess(list: List<Hit>) {
         handleLoading(false)
-        adapter.submitList(state.data.hits)
+        adapter.submitList(list)
         swipeToDelete(binding.recyclerNews)
     }
 
-    private fun handleError(state: RequestState.Error<AndroidNewsResponse>) {
+    private fun handleError(list: List<Hit>) {
         handleLoading(false)
-        adapter.submitList(state.data?.hits)
+        adapter.submitList(list)
         swipeToDelete(binding.recyclerNews)
     }
 
@@ -122,7 +121,8 @@ class HomeScreen : Fragment(R.layout.home_screen) {
                 ) {
                     val pos = viewHolder.adapterPosition
                     val hitToDelete = adapter.currentList[pos]
-                    viewModel.removeItem(hitToDelete)
+                    viewModel.deleteNews(hitToDelete.objectID)
+                    viewModel.getDataFromDatabase()
                 }
             }
 
